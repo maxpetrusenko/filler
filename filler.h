@@ -33,5 +33,7 @@ char	*get_player(char *line, t_filler *data);
 char	*get_map(char *line, t_filler *data);
 char	*get_piece_size(char *line, t_filler *data);
 char	*get_piece(char *line, t_filler *data);
+void	*malloc_map(t_filler *data);
+void	*malloc_piece(t_filler *data);
 
 #endif

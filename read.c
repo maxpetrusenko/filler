@@ -33,6 +33,8 @@ char	*get_map(char *line, t_filler *data)
 		free(line);
 	    get_next_line(data->fd, &line);
 	}
+	ft_printf("%s",line);
+	malloc_map(data);
 	data->map_x = 0;
 	while(data->map_x < data->map_height)
 	{
@@ -41,7 +43,6 @@ char	*get_map(char *line, t_filler *data)
 		while(data->map_y < data->map_width)
 		{
 			data->map[data->map_x][data->map_y] = line[data->map_start];
-			free(line);
 			data->map_y++;
 			data->map_start++;
 		}
@@ -70,19 +71,19 @@ char	*get_piece_size(char *line, t_filler *data)
 
 char	*get_piece(char *line, t_filler *data)
 {
-
-	make_piece(data);
 	data->piece_x = 0;
+	malloc_piece(data);
 	while (data->piece_x < data->p_height)
 	{
 		free(line);
-		get_next_line(0, &line);
+		get_next_line(data->fd, &line);
 		data->piece_start = 0;
 		data->piece_y = 0;
 		while (data->piece_y < data->p_width)
 		{
-			data->piece[data->piece_x][data->piece_y] = line[data->piece_start++];
+			data->piece[data->piece_x][data->piece_y] = line[data->piece_start];
 			data->piece_y++;
+			data->piece_start++;
 		}
 		data->piece_x++;
 	}
