@@ -24,6 +24,13 @@ typedef struct s_filler
 	int		piece_start;
 	char	**map;
 	char	**piece;
+	int		my_x;
+	int		my_y;
+	int		enemy_x;
+	int		enemy_y;
+	int		last_x;
+	int		last_y;
+	int		min_dist;
 
 }               t_filler;
 
@@ -35,5 +42,12 @@ char	*get_piece_size(char *line, t_filler *data);
 char	*get_piece(char *line, t_filler *data);
 void	*malloc_map(t_filler *data);
 void	*malloc_piece(t_filler *data);
+
+void	find_min_dist(t_filler *data);
+void	last_location(t_filler *data, int x, int y);
+int		check_column(t_filler *data, int y);
+int		check_row(t_filler *data, int y, int x);
+int		place_piece(t_filler *data, int x , int y);
+// int		place_piece();
 
 #endif

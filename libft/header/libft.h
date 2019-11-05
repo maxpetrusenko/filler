@@ -6,7 +6,7 @@
 /*   By: max_p <max_p@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 09:18:45 by mpetruse          #+#    #+#             */
-/*   Updated: 2019/06/02 17:35:07 by max_p            ###   ########.fr       */
+/*   Updated: 2019/11/04 17:44:33 by max_p            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -136,6 +136,6 @@ int					ft_isspace(char c);
 int					ft_wcharlen(wchar_t wc);
 
 int					get_next_line(const int fd, char **line);
-void				ft_free_double_array(char **line, int size);
+void				ft_free_double_array(void **line, int size);
 
 #endif

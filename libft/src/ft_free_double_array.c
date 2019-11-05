@@ -1,7 +1,7 @@
 
 #include "libft.h"
 
-void ft_free_double_array(char **line, int size)
+void ft_free_double_array(void **line, int size)
 {
 	int i;
 
