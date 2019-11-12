@@ -3,14 +3,14 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: max_p <max_p@student.42.fr>                +#+  +:+       +#+        */
+/*   By: mpetruse <marvin@42.fr>                    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2018/07/12 22:23:56 by mpetruse          #+#    #+#             */
-/*   Updated: 2019/11/11 09:35:26 by max_p            ###   ########.fr       */
+/*   Created: 2019/11/11 18:16:03 by mpetruse          #+#    #+#             */
+/*   Updated: 2019/11/11 18:16:04 by mpetruse         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-# include "../header/libft.h"
+#include "../header/libft.h"
 
 int		len(char *s, int c)
 {

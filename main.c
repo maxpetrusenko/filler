@@ -1,20 +1,30 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   main.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mpetruse <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/11 18:03:04 by mpetruse          #+#    #+#             */
+/*   Updated: 2019/11/11 18:03:06 by mpetruse         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
 
 #include "filler.h"
 
-int	main(void)
+int		main(void)
 {
 	char		*line;
-    t_filler	*data;
+	t_filler	*data;
 
 	data = malloc(sizeof(t_filler));
 	data->got_map = 0;
-    data->got_player = 0;
-
+	data->got_player = 0;
 	while (get_next_line(0, &line) > 0)
 	{
-		if( *line == '\0')
-			break;
-        read_line(line, data);
+		if (*line == '\0')
+			break ;
+		read_line(line, data);
 		find_min_dist(data);
 		ft_free_double_array((void**)data->map, data->map_height);
 		ft_free_double_array((void**)data->piece, data->p_height);
@@ -26,20 +36,20 @@ int	main(void)
 
 void	read_line(char *line, t_filler *data)
 {
-	if(data->got_player == 0)
+	if (data->got_player == 0)
 	{
-        line = get_player(line, data);
+		line = get_player(line, data);
 		data->got_player = 1;
 	}
-    if(data->got_map == 0)
+	if (data->got_map == 0)
 	{
-        line = get_map_size(line, data);
+		line = get_map_size(line, data);
 		data->got_map = 1;
 	}
 	line = get_map(line, data);
 	line = get_piece_size(line, data);
 	line = get_piece(line, data);
-    free(line);
+	free(line);
 }
 
 void	*malloc_map(t_filler *data)

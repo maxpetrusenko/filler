@@ -1,23 +1,36 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   fill.c                                             :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: mpetruse <marvin@42.fr>                    +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2019/11/11 18:02:27 by mpetruse          #+#    #+#             */
+/*   Updated: 2019/11/11 18:02:30 by mpetruse         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #include "filler.h"
 
-void find_min_dist(t_filler *data)
+void	find_min_dist(t_filler *data)
 {
-	int can_place = 0;
-    data->map_x = 0;
-	data->min_dist = 9999999;
+	int can_place;
 
-    while (data->map_x < data->map_height)
-    {
-        data->map_y = 0;
-        while (data->map_y < data->map_width)
-        {
+	can_place = 0;
+	data->map_x = 0;
+	data->min_dist = 9999999;
+	while (data->map_x < data->map_height)
+	{
+		data->map_y = 0;
+		while (data->map_y < data->map_width)
+		{
 			can_place = place_piece(data, data->map_x, data->map_y);
-			if( can_place == 1)
-				last_location(data, data->map_x,data->map_y);
-            data->map_y++;
-        }
-        data->map_x++;
-    }
+			if (can_place == 1)
+				last_location(data, data->map_x, data->map_y);
+			data->map_y++;
+		}
+		data->map_x++;
+	}
 	ft_printf("%d %d\n", data->last_y, data->last_x);
 }
 
@@ -25,22 +38,22 @@ void	last_location(t_filler *data, int x, int y)
 {
 	int abs;
 
-	abs = (data->my_x - data->enemy_x) +(data->my_y - data->enemy_y);
+	abs = (data->my_x - data->enemy_x) + (data->my_y - data->enemy_y);
 	if (data->map[data->map_x][data->map_y] == data->my_sign)
 	{
-	    data->my_x = data->map_x;
-	    data->my_y = data->map_y;
+		data->my_x = data->map_x;
+		data->my_y = data->map_y;
 	}
 	if (data->map[data->map_x][data->map_y] == data->enemy_sign)
 	{
-	    data->enemy_x = data->map_x;
-	    data->enemy_y = data->map_y;
+		data->enemy_x = data->map_x;
+		data->enemy_y = data->map_y;
 	}
-	abs < data->min_dist ? data->last_x = x : data->last_x ;
-	abs < data->min_dist ? data->last_y = y : data->last_y ;
+	abs < data->min_dist ? data->last_x = x : data->last_x;
+	abs < data->min_dist ? data->last_y = y : data->last_y;
 }
 
-int				place_piece(t_filler *data, int x, int y)
+int		place_piece(t_filler *data, int x, int y)
 {
 	data->i = 0;
 	data->k = 0;
@@ -67,7 +80,7 @@ int				place_piece(t_filler *data, int x, int y)
 	return (0);
 }
 
-int				check_column(t_filler *data, int y)
+int		check_column(t_filler *data, int y)
 {
 	int x;
 
@@ -85,7 +98,7 @@ int				check_column(t_filler *data, int y)
 	return (1);
 }
 
-int				check_row(t_filler *data, int y, int x)
+int		check_row(t_filler *data, int y, int x)
 {
 	while (x < data->p_width)
 	{
