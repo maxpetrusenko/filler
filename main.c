@@ -3,30 +3,22 @@
 
 int	main(void)
 {
-	char	*line;
+	char		*line;
     t_filler	*data;
 
 	data = malloc(sizeof(t_filler));
 	data->got_map = 0;
     data->got_player = 0;
 
-	// if (ac < 2)
-	// 	return (0);
-	// data->fd = open(av[1], O_RDONLY);
 	while (get_next_line(0, &line) > 0)
 	{
-		ft_printf("line =  %s\n", &line);
 		if( *line == '\0')
 			break;
         read_line(line, data);
-		// ft_printf("hui");
 		find_min_dist(data);
-		//ft_free_double_array((void**)data->map, data->map_height);
-		//ft_free_double_array((void**)data->piece, data->p_height);
+		ft_free_double_array((void**)data->map, data->map_height);
+		ft_free_double_array((void**)data->piece, data->p_height);
 	}
-	// printf("map:height: %d and width is: %d\n", data->map_height, data->map_width);
-	// printf("piece:height: %d and width is: %d\n", data->p_height, data->p_width);
-	// printf("my sign: %c and enemy is: %c\n", data->my_sign, data->enemy_sign);
 	free(data);
 	close(data->fd);
 	return (0);
@@ -45,11 +37,8 @@ void	read_line(char *line, t_filler *data)
 		data->got_map = 1;
 	}
 	line = get_map(line, data);
-	
 	line = get_piece_size(line, data);
-
 	line = get_piece(line, data);
-
     free(line);
 }
 

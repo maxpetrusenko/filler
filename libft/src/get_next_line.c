@@ -6,70 +6,129 @@
 /*   By: max_p <max_p@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/07/12 22:23:56 by mpetruse          #+#    #+#             */
-/*   Updated: 2019/11/04 17:44:25 by max_p            ###   ########.fr       */
+/*   Updated: 2019/11/11 09:35:26 by max_p            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "libft.h"
+# include "../header/libft.h"
 
-static	int	find_nl(int fd, char **buf, char **line)
+int		len(char *s, int c)
 {
-	char		*new_line;
-	char		*tmp;
+	int		i;
 
-	while ((new_line = ft_strchr(buf[fd], '\n')))
-	{
-		tmp = buf[fd];
-		*new_line = '\0';
-		*line = ft_strsub(buf[fd], 0, new_line - buf[fd]);
-		buf[fd] = ft_strdup(new_line + 1);
-		free(tmp);
-		return (1);
-	}
-	while (*buf[fd])
-	{
-		*line = ft_strnew(ft_strlen(buf[fd]));
-		ft_strcpy(*line, buf[fd]);
-		buf[fd] = ft_memalloc(BUFF_SIZE + 1);
-		return (1);
-	}
-	return (0);
-}
-
-static	int	ft_read(int fd, char **line)
-{
-	char		*buf;
-	char		*tmp;
-	int			i;
-
-	buf = ft_strnew(BUFF_SIZE);
-	while ((i = read(fd, buf, BUFF_SIZE)) > 0)
-	{
-		if (!line[fd])
-		{
-			line[fd] = ft_strnew(ft_strlen(buf));
-			ft_strcpy(line[fd], buf);
-		}
-		else
-		{
-			tmp = line[fd];
-			line[fd] = ft_strjoin(line[fd], buf);
-			free(tmp);
-		}
-		ft_memset(buf, 0, BUFF_SIZE);
-	}
-	free(buf);
+	i = 0;
+	while (s[i] != '\0' && s[i] != (char)c)
+		i++;
 	return (i);
 }
 
-int			get_next_line(const int fd, char **line)
+char	*ft_str_ljoin(char **s1, char **s2)
 {
-	static	char	*buf[FDS];
+	char	*without_leaks;
 
-	if (!line || fd < 0 || BUFF_SIZE < 0 || (ft_read(fd, &buf[fd]) < 0) ||
-fd > FDS)
+	without_leaks = NULL;
+	if (!s1 && !s2)
+		return (NULL);
+	else if (!*s1 && *s2)
+	{
+		without_leaks = *s2;
+		*s2 = NULL;
+	}
+	else if (!*s2 && *s1)
+	{
+		without_leaks = *s1;
+		*s1 = NULL;
+	}
+	else
+	{
+		without_leaks = ft_strjoin(*s1, *s2);
+		ft_strdel(s1);
+		ft_strdel(s2);
+	}
+	return (without_leaks);
+}
+
+void	get_tail(const int fd, char *buf, t_line **head)
+{
+	t_line	*tail;
+	t_line	*ptr;
+	char	*tmp;
+	int		start;
+
+	tail = NULL;
+	ptr = *head;
+	start = len(buf, '\n') + 1;
+	while (ptr && ptr->fd != fd)
+		ptr = ptr->next;
+	if (ptr == NULL || *head == NULL)
+	{
+		tail = (t_line*)malloc(sizeof(t_line) * 1);
+		tail->fd = fd;
+		tail->next = *head ? *head : NULL;
+		if (!(tail->str = ft_strsub(buf, start, ft_strlen(buf) - start)))
+			ft_memdel((void**)tail);
+		*head = tail;
+	}
+	if (ptr)
+	{
+		tmp = ptr->str;
+		ptr->str = ft_strsub(buf, start, ft_strlen(buf) - start);
+		tmp ? ft_strdel(&tmp) : 0;
+	}
+}
+
+int		reading(int fd, char **line, t_line **head)
+{
+	int		ret;
+	char	buf[32 + 1];
+	char	*tmp;
+
+	while ((ret = read(fd, buf, 32)) > 0)
+	{
+		buf[ret] = '\0';
+		if (ft_strchr(buf, '\n') != NULL)
+		{
+			tmp = ft_strsub(buf, 0, len(buf, '\n'));
+			*line = ft_str_ljoin(line, &tmp);
+			get_tail(fd, buf, head);
+			return (1);
+		}
+		else
+		{
+			tmp = ft_strdup(buf);
+			*line = ft_str_ljoin(line, &tmp);
+		}
+	}
+	if (ret < 0)
 		return (-1);
-	if (find_nl(fd, &buf[fd], line) == 1)
-		return (1);
-	return (0);
+	return (*line ? 1 : 0);
+}
+
+int		get_next_line(const int fd, char **line)
+{
+	static	t_line	*head = NULL;
+	t_line			*ptr;
+
+	if (fd < 0 || line == NULL)
+		return (-1);
+	*line = NULL;
+	if (head)
+	{
+		ptr = head;
+		while (ptr && ptr->fd != fd)
+			ptr = ptr->next;
+		if (ptr && ptr->str && ft_strchr(ptr->str, '\n') != NULL)
+		{
+			*line = ft_strsub(ptr->str, 0, len(ptr->str, '\n'));
+			get_tail(fd, ptr->str, &head);
+			return (1);
+		}
+		if (ptr && ptr->str && !ft_strchr(ptr->str, '\n')
+			&& !ft_strequ(ptr->str, ""))
+		{
+			*line = ptr->str;
+			ptr->str = NULL;
+		}
+	}
+	return (reading(fd, line, &head));
 }

@@ -6,7 +6,7 @@
 /*   By: max_p <max_p@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2018/06/20 09:18:45 by mpetruse          #+#    #+#             */
-/*   Updated: 2019/11/04 17:44:33 by max_p            ###   ########.fr       */
+/*   Updated: 2019/11/11 09:34:12 by max_p            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,6 +18,8 @@
 # include <errno.h>
 # include "ft_printf.h"
 # include <fcntl.h>
+# include <sys/types.h>
+# include <sys/uio.h>
 # define FALSE 0
 # define TRUE 1
 # define BUFF_SIZE 9999
@@ -35,6 +37,12 @@
 # define ABS(a)				(a < 0) ? -a : a
 
 typedef int			t_bool;
+typedef struct		s_line
+{
+	char			*str;
+	int				fd;
+	struct s_line	*next;
+}					t_line;
 
 void				*ft_memset(void *dst, int data, size_t len);
 void				ft_bzero(void *dst, size_t len);
@@ -134,8 +142,10 @@ char				*ft_itoaf(uintmax_t n);
 char				*ft_get_binary(unsigned char octet);
 int					ft_isspace(char c);
 int					ft_wcharlen(wchar_t wc);
-
-int					get_next_line(const int fd, char **line);
 void				ft_free_double_array(void **line, int size);
+int					get_next_line(const int fd, char **line);
+int					reading(int fd, char **line, t_line **head);
+void				get_tail(const int fd, char *buf, t_line **head);
+int					len(char *s, int c);
 
 #endif
