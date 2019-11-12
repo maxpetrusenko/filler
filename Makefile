@@ -1,6 +1,6 @@
 NAME = mpetruse.filler
 CC = gcc
-CFLAGS = -Wall -Werror -Wextra -g
+CFLAGS = -Wall -Werror -Wextra
 SRC = 	*.c
 HEADERS = filler.h
 LIBFT = libft/libft.a
