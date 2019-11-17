@@ -3,132 +3,78 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mpetruse <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: max_p <max_p@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 18:16:03 by mpetruse          #+#    #+#             */
-/*   Updated: 2019/11/11 18:16:04 by mpetruse         ###   ########.fr       */
+/*   Updated: 2019/11/16 14:41:22 by max_p            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../header/libft.h"
 
-int		len(char *s, int c)
+char			*ft_stock_the_new_line(char *str)
 {
-	int		i;
+	int			i;
+	int			len;
+	char		*new;
 
 	i = 0;
-	while (s[i] != '\0' && s[i] != (char)c)
-		i++;
-	return (i);
-}
-
-char	*ft_str_ljoin(char **s1, char **s2)
-{
-	char	*without_leaks;
-
-	without_leaks = NULL;
-	if (!s1 && !s2)
+	len = 0;
+	while (str[len++])
+		;
+	if (!(new = (char *)malloc(sizeof(*new) * len + 1)))
 		return (NULL);
-	else if (!*s1 && *s2)
+	while (i < len && str[i] != '\n')
 	{
-		without_leaks = *s2;
-		*s2 = NULL;
+		new[i] = str[i];
+		i++;
 	}
-	else if (!*s2 && *s1)
-	{
-		without_leaks = *s1;
-		*s1 = NULL;
-	}
-	else
-	{
-		without_leaks = ft_strjoin(*s1, *s2);
-		ft_strdel(s1);
-		ft_strdel(s2);
-	}
-	return (without_leaks);
+	new[i] = '\0';
+	return (new);
 }
 
-void	get_tail(const int fd, char *buf, t_line **head)
+static char		*ft_clean_new(char *str)
 {
-	t_line	*tail;
-	t_line	*ptr;
-	char	*tmp;
-	int		start;
+	char		*new;
+	int			i;
 
-	tail = NULL;
-	ptr = *head;
-	start = len(buf, '\n') + 1;
-	while (ptr && ptr->fd != fd)
-		ptr = ptr->next;
-	if (ptr == NULL || *head == NULL)
+	i = 0;
+	while (str[i] != '\n' && str[i])
+		i++;
+	if ((str[i] && !str[i + 1]) || !str[i])
 	{
-		tail = (t_line*)malloc(sizeof(t_line) * 1);
-		tail->fd = fd;
-		tail->next = *head ? *head : NULL;
-		if (!(tail->str = ft_strsub(buf, start, ft_strlen(buf) - start)))
-			ft_memdel((void**)tail);
-		*head = tail;
+		ft_strdel(&str);
+		return (NULL);
 	}
-	if (ptr)
-	{
-		tmp = ptr->str;
-		ptr->str = ft_strsub(buf, start, ft_strlen(buf) - start);
-		tmp ? ft_strdel(&tmp) : 0;
-	}
+	new = ft_strdup(str + i + 1);
+	ft_strdel(&str);
+	return (new);
 }
 
-int		reading(int fd, char **line, t_line **head)
+int				get_next_line(const int fd, char **line)
 {
-	int		ret;
-	char	buf[32 + 1];
-	char	*tmp;
+	char		buff[BUFF_SIZE + 1];
+	int			ret;
+	static char	*new;
 
-	while ((ret = read(fd, buf, 32)) > 0)
-	{
-		buf[ret] = '\0';
-		if (ft_strchr(buf, '\n') != NULL)
-		{
-			tmp = ft_strsub(buf, 0, len(buf, '\n'));
-			*line = ft_str_ljoin(line, &tmp);
-			get_tail(fd, buf, head);
-			return (1);
-		}
-		else
-		{
-			tmp = ft_strdup(buf);
-			*line = ft_str_ljoin(line, &tmp);
-		}
-	}
-	if (ret < 0)
+	if (!new)
+		new = ft_strnew(1);
+	if (BUFF_SIZE < 0 || !line || fd > FDS|| fd < 0)
 		return (-1);
-	return (*line ? 1 : 0);
-}
-
-int		get_next_line(const int fd, char **line)
-{
-	static	t_line	*head = NULL;
-	t_line			*ptr;
-
-	if (fd < 0 || line == NULL)
-		return (-1);
-	*line = NULL;
-	if (head)
+	ret = 2;
+	while (!(ft_strchr(new, '\n')))
 	{
-		ptr = head;
-		while (ptr && ptr->fd != fd)
-			ptr = ptr->next;
-		if (ptr && ptr->str && ft_strchr(ptr->str, '\n') != NULL)
-		{
-			*line = ft_strsub(ptr->str, 0, len(ptr->str, '\n'));
-			get_tail(fd, ptr->str, &head);
-			return (1);
-		}
-		if (ptr && ptr->str && !ft_strchr(ptr->str, '\n')
-			&& !ft_strequ(ptr->str, ""))
-		{
-			*line = ptr->str;
-			ptr->str = NULL;
-		}
+		ret = read(fd, buff, BUFF_SIZE);
+		if (ret == -1)
+			return (-1);
+		buff[ret] = '\0';
+		new = ft_strjoin(new, buff);
+		if (ret == 0 && *new == '\0')
+			return (0);
+		if (ret == 0)
+			break ;
 	}
-	return (reading(fd, line, &head));
+	*line = ft_stock_the_new_line(new);
+	new = ft_clean_new(new);
+	return (1);
 }

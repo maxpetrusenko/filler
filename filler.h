@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   filler.h                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mpetruse <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: max_p <max_p@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 18:05:52 by mpetruse          #+#    #+#             */
-/*   Updated: 2019/11/11 18:06:53 by mpetruse         ###   ########.fr       */
+/*   Updated: 2019/11/16 18:10:17 by max_p            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,6 +44,10 @@ typedef struct	s_filler
 	int			k;
 	int			i;
 	int			j;
+	int			left;
+	int 		right;
+	int			min;
+	int			can_place;
 }				t_filler;
 
 void			read_line(char *line, t_filler *data);

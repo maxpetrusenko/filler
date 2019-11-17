@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: mpetruse <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: max_p <max_p@student.42.fr>                +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2019/11/11 18:03:04 by mpetruse          #+#    #+#             */
-/*   Updated: 2019/11/11 18:03:06 by mpetruse         ###   ########.fr       */
+/*   Updated: 2019/11/16 15:08:04 by max_p            ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,11 +20,17 @@ int		main(void)
 	data = malloc(sizeof(t_filler));
 	data->got_map = 0;
 	data->got_player = 0;
+	data->map_height = 0;
+	data->map_width = 0;
+	data->p_height = 0;
+	data->p_width = 0;
 	while (get_next_line(0, &line) > 0)
 	{
 		if (*line == '\0')
-			break ;
+			break;
 		read_line(line, data);
+		data->min = -1;
+		data->can_place = 0;
 		find_min_dist(data);
 		ft_free_double_array((void**)data->map, data->map_height);
 		ft_free_double_array((void**)data->piece, data->p_height);
